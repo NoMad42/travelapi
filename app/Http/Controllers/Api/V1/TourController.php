@@ -14,8 +14,8 @@ class TourController extends Controller
     {
         return TourRecource::collection(
             $travel->tours()
-            ->orderBy('starting_date')
-            ->paginate()
+                ->orderBy('starting_date')
+                ->paginate()
         );
     }
 }
