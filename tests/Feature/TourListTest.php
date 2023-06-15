@@ -42,6 +42,18 @@ class TourListTest extends TestCase
         $response->assertJsonFragment(['price' => $price]);
     }
 
+    public function test_tours_list_return_pagination() : void
+    {
+        $travel = Travel::factory()->create();
+        Tour::factory(16)->create(['travel_id' => $travel->id]);
+
+        $response = $this->get('/api/v1/travels/'.$travel->slug.'/tours');
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(15, 'data');
+        $response->assertJsonPath('meta.last_page', 2);
+    }
+
     public function test_tours_list_sorts_by_starting_date_correctly() : void
     {
         $travel = Travel::factory()->create();
@@ -63,7 +75,7 @@ class TourListTest extends TestCase
         $response->assertJsonPath('data.1.id', $laterTour->id);
     }
 
-    public function test_tours_list_sorts_by_starting_price_correctly() : void
+    public function test_tours_list_sorts_by_price_correctly() : void
     {
         $travel = Travel::factory()->create();
         $expensiveTour = Tour::factory()->create([
@@ -91,7 +103,7 @@ class TourListTest extends TestCase
         $response->assertJsonPath('data.2.id', $expensiveTour->id);
     }
 
-    public function test_tours_list_filters_starting_price_correctly() : void
+    public function test_tours_list_filters_by_price_correctly() : void
     {
         $travel = Travel::factory()->create();
         $expensiveTour = Tour::factory()->create([
@@ -137,7 +149,7 @@ class TourListTest extends TestCase
         $response->assertJsonFragment(['id' => $expensiveTour->id]);
     }
 
-    public function test_tours_list_filters_bystarting_date_correctly(): void
+    public function test_tours_list_filters_by_starting_date_correctly(): void
     {
         $travel = Travel::factory()->create();
         $laterTour = Tour::factory()->create([
@@ -185,7 +197,7 @@ class TourListTest extends TestCase
         $response->assertJsonFragment(['id' => $laterTour->id]);
     }
 
-    public function test_tour_list_return_validation_errors(): void
+    public function test_tours_list_return_validation_errors(): void
     {
         $travel = Travel::factory()->create();
 
