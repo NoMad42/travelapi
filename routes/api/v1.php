@@ -32,6 +32,7 @@ Route::prefix('admin')
     ])
     ->group(function () {
         Route::post('travels', [Admin\TravelController::class, 'store']);
+        Route::post('travels/{travel:slug}/tours', [Admin\TourController::class, 'store']);
     });
 
 Route::post('login', LoginController::class);
