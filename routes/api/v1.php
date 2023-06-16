@@ -37,7 +37,7 @@ Route::prefix('admin')
             });
 
         Route::middleware([
-                'role:editor',
+                'role:admin,editor',
             ])
             ->group(function () {
                 Route::put('travels/{travel}', [Admin\TravelController::class, 'update']);

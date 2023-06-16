@@ -82,5 +82,22 @@ class AdminTravelTest extends TestCase
 
         $response = $this->get('/api/v1/travels');
         $response->assertJsonFragment(['name' => $travelNameUpdated]);
+
+        $user = User::factory()->create();
+        $user->roles()->attach(Role::where('name', 'admin')->value('id'));
+        
+        $travelNameUpdated = 'Travel name updated by admin';
+        
+        $response = $this->actingAs($user)->putJson('/api/v1/admin/travels/'.$travel->id, [
+            'name' => $travelNameUpdated,
+            'is_public' => 1,
+            'description' => 'Some description',
+            'number_of_days' => 5,
+        ]);
+
+        $response->assertStatus(200);
+
+        $response = $this->get('/api/v1/travels');
+        $response->assertJsonFragment(['name' => $travelNameUpdated]);
     }
 }
