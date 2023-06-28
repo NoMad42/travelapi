@@ -19,18 +19,18 @@ class RoleMiddleware
             return $next($request);
         }
 
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             abort(401);
         }
 
         if (
-            !auth()->user()
-            ->roles()
-            ->whereIn(
-                'name', 
-                $roles
-            )
-            ->exists()
+            ! auth()->user()
+                ->roles()
+                ->whereIn(
+                    'name',
+                    $roles
+                )
+                ->exists()
         ) {
             abort(403);
         }

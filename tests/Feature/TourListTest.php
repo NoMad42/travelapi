@@ -17,7 +17,7 @@ class TourListTest extends TestCase
         $tour = Tour::factory()->create([
             'travel_id' => $travel->id,
         ]);
-        
+
         $response = $this->get("/api/v1/travels/{$travel->slug}/tours");
 
         $response->assertStatus(200);
@@ -25,7 +25,7 @@ class TourListTest extends TestCase
         $response->assertJsonFragment(['id' => $tour->id]);
     }
 
-    public function test_tour_price_is_shown_correctly() : void
+    public function test_tour_price_is_shown_correctly(): void
     {
         $price = 123.45;
 
@@ -34,7 +34,7 @@ class TourListTest extends TestCase
             'travel_id' => $travel->id,
             'price' => $price,
         ]);
-        
+
         $response = $this->get("/api/v1/travels/{$travel->slug}/tours");
 
         $response->assertStatus(200);
@@ -42,7 +42,7 @@ class TourListTest extends TestCase
         $response->assertJsonFragment(['price' => $price]);
     }
 
-    public function test_tours_list_return_pagination() : void
+    public function test_tours_list_return_pagination(): void
     {
         $travel = Travel::factory()->create();
         Tour::factory(16)->create(['travel_id' => $travel->id]);
@@ -54,7 +54,7 @@ class TourListTest extends TestCase
         $response->assertJsonPath('meta.last_page', 2);
     }
 
-    public function test_tours_list_sorts_by_starting_date_correctly() : void
+    public function test_tours_list_sorts_by_starting_date_correctly(): void
     {
         $travel = Travel::factory()->create();
         $laterTour = Tour::factory()->create([
@@ -67,7 +67,7 @@ class TourListTest extends TestCase
             'starting_date' => now(),
             'ending_date' => now()->addDay(),
         ]);
-        
+
         $response = $this->get("/api/v1/travels/{$travel->slug}/tours");
 
         $response->assertStatus(200);
@@ -75,7 +75,7 @@ class TourListTest extends TestCase
         $response->assertJsonPath('data.1.id', $laterTour->id);
     }
 
-    public function test_tours_list_sorts_by_price_correctly() : void
+    public function test_tours_list_sorts_by_price_correctly(): void
     {
         $travel = Travel::factory()->create();
         $expensiveTour = Tour::factory()->create([
@@ -94,7 +94,7 @@ class TourListTest extends TestCase
             'starting_date' => now(),
             'ending_date' => now()->addDay(),
         ]);
-        
+
         $response = $this->get("/api/v1/travels/{$travel->slug}/tours?sortBy=price&sortOrder=asc");
 
         $response->assertStatus(200);
@@ -103,7 +103,7 @@ class TourListTest extends TestCase
         $response->assertJsonPath('data.2.id', $expensiveTour->id);
     }
 
-    public function test_tours_list_filters_by_price_correctly() : void
+    public function test_tours_list_filters_by_price_correctly(): void
     {
         $travel = Travel::factory()->create();
         $expensiveTour = Tour::factory()->create([
@@ -114,35 +114,35 @@ class TourListTest extends TestCase
             'travel_id' => $travel->id,
             'price' => 100,
         ]);
-        
+
         $endpoint = "/api/v1/travels/{$travel->slug}/tours";
-        
+
         $response = $this->get("$endpoint?priceFrom=100");
         $response->assertJsonCount(2, 'data');
         $response->assertJsonFragment(['id' => $cheapTour->id]);
         $response->assertJsonFragment(['id' => $expensiveTour->id]);
-        
+
         $response = $this->get("$endpoint?priceFrom=150");
         $response->assertJsonCount(1, 'data');
         $response->assertJsonMissing(['id' => $cheapTour->id]);
         $response->assertJsonFragment(['id' => $expensiveTour->id]);
-        
+
         $response = $this->get("$endpoint?priceFrom=250");
         $response->assertJsonCount(0, 'data');
-        
+
         $response = $this->get("$endpoint?priceTo=200");
         $response->assertJsonCount(2, 'data');
         $response->assertJsonFragment(['id' => $cheapTour->id]);
         $response->assertJsonFragment(['id' => $expensiveTour->id]);
-        
+
         $response = $this->get("$endpoint?priceTo=150");
         $response->assertJsonCount(1, 'data');
         $response->assertJsonFragment(['id' => $cheapTour->id]);
         $response->assertJsonMissing(['id' => $expensiveTour->id]);
-        
+
         $response = $this->get("$endpoint?priceTo=50");
         $response->assertJsonCount(0, 'data');
-        
+
         $response = $this->get("$endpoint?priceFrom=150&priceTo=250");
         $response->assertJsonCount(1, 'data');
         $response->assertJsonMissing(['id' => $cheapTour->id]);
@@ -162,32 +162,32 @@ class TourListTest extends TestCase
             'starting_date' => now(),
             'ending_date' => now()->addDay(),
         ]);
-        
+
         $endpoint = "/api/v1/travels/{$travel->slug}/tours";
-        
+
         $response = $this->get($endpoint.'?dateFrom='.now());
         $response->assertJsonCount(2, 'data');
         $response->assertJsonFragment(['id' => $earlierTour->id]);
         $response->assertJsonFragment(['id' => $laterTour->id]);
-        
+
         $response = $this->get($endpoint.'?dateFrom='.now()->addDay());
         $response->assertJsonCount(1, 'data');
         $response->assertJsonMissing(['id' => $earlierTour->id]);
         $response->assertJsonFragment(['id' => $laterTour->id]);
-        
+
         $response = $this->get($endpoint.'?dateFrom='.now()->addDays(5));
         $response->assertJsonCount(0, 'data');
-        
+
         $response = $this->get($endpoint.'?dateTo='.now()->addDays(5));
         $response->assertJsonCount(2, 'data');
         $response->assertJsonFragment(['id' => $earlierTour->id]);
         $response->assertJsonFragment(['id' => $laterTour->id]);
-        
+
         $response = $this->get($endpoint.'?dateTo='.now()->addDay());
         $response->assertJsonCount(1, 'data');
         $response->assertJsonMissing(['id' => $laterTour->id]);
         $response->assertJsonFragment(['id' => $earlierTour->id]);
-        
+
         $response = $this->get($endpoint.'?dateTo='.now()->subDay());
         $response->assertJsonCount(0, 'data');
 

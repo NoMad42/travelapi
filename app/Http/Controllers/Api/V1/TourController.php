@@ -15,7 +15,7 @@ class TourController extends Controller
             $travel->tours()
                 ->when(
                     $request->priceFrom,
-                    fn($query) => $query->where(
+                    fn ($query) => $query->where(
                         'price',
                         '>=',
                         $request->priceFrom * 100
@@ -23,7 +23,7 @@ class TourController extends Controller
                 )
                 ->when(
                     $request->priceTo,
-                    fn($query) => $query->where(
+                    fn ($query) => $query->where(
                         'price',
                         '<=',
                         $request->priceTo * 100
@@ -31,7 +31,7 @@ class TourController extends Controller
                 )
                 ->when(
                     $request->dateFrom,
-                    fn($query) => $query->where(
+                    fn ($query) => $query->where(
                         'starting_date',
                         '>=',
                         $request->dateFrom
@@ -39,7 +39,7 @@ class TourController extends Controller
                 )
                 ->when(
                     $request->dateTo,
-                    fn($query) => $query->where(
+                    fn ($query) => $query->where(
                         'starting_date',
                         '<=',
                         $request->dateTo
@@ -47,7 +47,7 @@ class TourController extends Controller
                 )
                 ->when(
                     $request->sortBy && $request->sortOrder,
-                    fn($query) => $query->orderBy(
+                    fn ($query) => $query->orderBy(
                         $request->sortBy,
                         $request->sortOrder
                     )

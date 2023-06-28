@@ -70,7 +70,7 @@ class AdminTravelTest extends TestCase
         $response->assertStatus(422);
 
         $travelNameUpdated = 'Travel name updated by editor';
-        
+
         $response = $this->actingAs($user)->putJson('/api/v1/admin/travels/'.$travel->id, [
             'name' => $travelNameUpdated,
             'is_public' => 1,
@@ -85,9 +85,9 @@ class AdminTravelTest extends TestCase
 
         $user = User::factory()->create();
         $user->roles()->attach(Role::where('name', 'admin')->value('id'));
-        
+
         $travelNameUpdated = 'Travel name updated by admin';
-        
+
         $response = $this->actingAs($user)->putJson('/api/v1/admin/travels/'.$travel->id, [
             'name' => $travelNameUpdated,
             'is_public' => 1,

@@ -7,9 +7,9 @@ use Illuminate\Support\Str;
 
 class TravelObserver
 {
-    public function creating(Travel $travel) : void
+    public function creating(Travel $travel): void
     {
-        if (!empty($travel->slug)) {
+        if (! empty($travel->slug)) {
             return;
         }
 

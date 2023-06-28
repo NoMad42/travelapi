@@ -38,7 +38,7 @@ class CreateUserCommand extends Command
         $roleName = $this->choice('Role of new user', ['admin', 'editor'], 1);
 
         $role = Role::where('name', $roleName)->first();
-        if(!$role) {
+        if (! $role) {
             $this->error('Role not found');
 
             return self::FAILURE;
@@ -58,7 +58,7 @@ class CreateUserCommand extends Command
             return self::FAILURE;
         }
 
-        DB::transaction(function() use ($user, $role) {
+        DB::transaction(function () use ($user, $role) {
             $user['password'] = Hash::make($user['password']);
             $newUser = User::create($user);
             $newUser->roles()->attach($role->id);

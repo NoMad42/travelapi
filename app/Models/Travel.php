@@ -22,14 +22,15 @@ class Travel extends Model
         'number_of_days',
     ];
 
-    public function tours(): HasMany {
+    public function tours(): HasMany
+    {
         return $this->hasMany(Tour::class);
     }
 
     public function numberOfNights(): Attribute
     {
         return Attribute::make(
-            get: fn($value, $attributes) => $attributes['number_of_days'] - 1
+            get: fn ($value, $attributes) => $attributes['number_of_days'] - 1
         );
     }
 }
